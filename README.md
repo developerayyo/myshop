@@ -1,2 +1,2 @@
-# myshop
+# TronicStore
 Online Shopping
