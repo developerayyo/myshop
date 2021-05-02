@@ -1,37 +1,98 @@
 {% extends "shop/base.html" %}
-{% load i18n %}
 {% load static %}
 
 {% block title %}
-    {% if category %}{{ category.name }}{% else %}{% trans "Products" %}{% endif %}
+    {% if category %}{{ category.name }}{% else %}Products{% endif %}
 {% endblock %}
-
 {% block content %}
-    <div id="sidebar">
-        <h3>{% trans "Categories" %}</h3>
-        <ul>
-            <li {% if not category %}class="selected"{% endif %}>
-                <a href="{% url "shop:product_list" %}">{% trans "All" %}</a>
-            </li>
-            {% for c in categories %}
-                <li {% if category.slug == c.slug %}class="selected"{% endif %}>
-                    <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-    <div id="main" class="product-list">
-        <h1>{% if category %}{{ category.name }}{% else %}{% trans "Products" %}{% endif %}</h1>
-        {% for product in products %}
-            <div class="item">
-                <a href="{{ product.get_absolute_url }}">
-                    <img src="
-                            {% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}">
-                </a>
-                <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
-                <br>
-                ${{ product.price }}
+    	<!-- Slider Area -->
+	<section class="hero-slider">
+		<!-- Single Slider -->
+		<div class="single-slider">
+			<div class="container">
+				<div class="row no-gutters">
+					<div class="col-lg-9 offset-lg-3 col-12">
+						<div class="text-inner">
+							<div class="row">
+								<div class="col-lg-7 col-12">
+									<div class="hero-text">
+										<h1><span>UP TO 50% OFF </span>Cool Electronics </h1>
+										<p>Maboriosam in a nesciung eget magnae <br> dapibus disting tloctio in the find it pereri <br> odiy maboriosm.</p>
+										<div class="button">
+											
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--/ End Single Slider -->
+	</section>
+	<!--/ End Slider Area -->
+<!-- Start Product Area -->
+    <div class="product-area section">
+            <div class="container">
+				<div class="row">
+					<div class="col-12">
+					<div class="section-title">
+                    <h2>{% if category %}{{ category.name }}{% else %}Products{% endif %}</h2>
+					</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<div class="product-info">
+							<div class="nav-main">
+								<!-- Tab Nav -->
+                                {% with request.resolver_match.url_name as url_name %}
+								<ul class="nav nav-tabs" id="myTab">
+                                    <li class="nav-item" {% if not category %}class="active"{% endif %}>
+                                    <a class="nav-link" href="{% url "shop:product_list" %}">All</a>
+                                    </li>
+                                    {% for c in categories %}
+                                        <li class="nav-item" {% if category.slug == c.slug %}class="active"{% endif %} >
+                                            <a class="nav-link"  href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+                                        </li>
+                                    {% endfor %}
+                                {% endwith %}
+								</ul>
+								<!--/ End Tab Nav -->
+							</div>
+							<div class="tab-content" id="myTabContent">
+								<!-- Start Single Tab -->
+								<div class="tab-pane fade show active" id="man">
+									<div class="tab-single">
+										<div class="row">
+                                        {% for product in products %}
+											<div class="col-xl-3 col-lg-4 col-md-4 col-12">
+												<div class="single-product">
+													<div class="product-img">
+														<a href="{{ product.get_absolute_url }}">
+															<img class="default-img" src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" alt="#">
+															<img class="hover-img" src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" alt="#">
+														</a>
+													</div>
+													<div class="product-content">
+														<h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
+														<div class="product-price">
+															<span>${{ product.price }}</span>
+														</div>
+													</div>
+												</div>
+											</div>
+                                        {% endfor %}
+										</div>
+									</div>
+								</div>
+								<!--/ End Single Tab -->
+							</div>
+						</div>
+					</div>
+				</div>
             </div>
-        {% endfor %}
     </div>
-{% endblock %}
+	<!-- End Product Area -->
+{% endblock content %}

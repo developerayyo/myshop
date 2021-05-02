@@ -1,33 +1,93 @@
 {% extends "shop/base.html" %}
-{% load i18n %}
+{% load static %}
 {% block title %}
-    {% trans "Checkout" %}
+    Checkout
 {% endblock %}
+
 {% block content %}
-    <h1>{% trans "Checkout" %}</h1>
-    <div class="order-info">
-        <h3>{% trans "Your order" %}</h3>
-        <ul>
-            {% for item in cart %}
-                <li>
-                    {{ item.quantity }}x {{ item.product.name }}
-                    <span>${{ item.total_price|floatformat:2 }}</span>
-                </li>
-            {% endfor %}
-            {% if cart.coupon %}
-                <li>
-                    {% blocktrans with code=cart.coupon.code discount=cart.coupon.discount %}
-                        "{{ code }}" ({{ discount }}% off)
-                    {% endblocktrans %}
-                    <span class="neg">- ${{ cart.get_discount|floatformat:2 }}</span>
-                </li>
-            {% endif %}
-        </ul>
-        <p>{% trans "Total" %}: ${{ cart.get_total_price_after_discount|floatformat:2 }}</p>
-    </div>
-    <form action="" method="post" class="order-form">
-        {{ form.as_p }}
-        <p><input type="submit" value="{% trans "Place order" %}"></p>
-        {% csrf_token %}
-    </form>
+<!-- Start Checkout -->
+		<section class="shop checkout section">
+			<div class="container">
+				<div class="row"> 
+					<div class="col-lg-8 col-12">
+						<div class="checkout-form">
+							<h2>Make Your Checkout Here</h2>
+							<p>Please register in order to checkout more quickly</p>
+							<!-- Form -->
+							<form  class="form" method="post" action="#">{% csrf_token %}
+								<div class="row">
+                                    {% for field in form %}
+									<div class="col-lg-6 col-md-6 col-12">
+										<div class="form-group">
+											<label>{{field.name}}<span>*</span></label>
+											<input id="id_for_label" name="{{field.name}}" required="required">
+										</div>
+									</div>
+                                    {% endfor %}
+                                    <!-- Button Widget -->
+							        <div class="single-widget get-button">
+							        	<div class="content">
+							        		<div class="button">
+							        			<button type="submit" class="btn">proceed to checkout</button>
+							        		</div>
+							        	</div>
+							        </div>
+							        <!--/ End Button Widget -->
+								</div>
+							</form>
+							<!--/ End Form -->
+						</div>
+					</div>
+					<div class="col-lg-4 col-12">
+						<div class="order-details">
+							<!-- Order Widget -->
+							<div class="single-widget">
+								<h2>CART  TOTALS</h2>
+								<div class="content">
+									<ul>
+									{% for item in cart %}
+            					    <li>
+            					        {{ item.product.name }} ({{ item.quantity }}x)
+            					        <span>${{ item.total_price|floatformat:2 }}</span>
+            					    </li>
+            						{% endfor %}
+										<li>Sub Total<span>${{cart.get_total_price}}</span></li>
+										{% if cart.coupon %}
+                                        <li>Coupon<span>{% with code=cart.coupon.code discount=cart.coupon.discount %}"{{ code }}"</span>
+                                        <li>({{ discount }}% off)<span class="text-danger">- ${{ cart.get_discount|floatformat:2 }}</span></li>
+                                            {% endwith %}
+                                    	{% endif %}
+										<li>(+) Shipping<span>Free</span></li>
+										<li class="last">Total<span>${{ cart.get_total_price_after_discount|floatformat:2 }}</span></li>
+									</ul>
+								</div>
+							</div>
+							<!--/ End Order Widget -->
+							<!-- Order Widget -->
+							<div class="single-widget">
+								<h2>Payments</h2>
+								<div class="content">
+									<div class="checkbox">
+										<label class="checkbox-inline checked" for="1"><input name="updates" id="1" type="checkbox"> Credit Card</label>
+									</div>
+								</div>
+							</div>
+							<!--/ End Order Widget -->
+							<!-- Payment Method Widget -->
+							<div class="single-widget payement">
+								<div class="content">
+									<img src="{% static 'assets/images/payment-method.png' %}" alt="#">
+								</div>
+							</div>
+							<!--/ End Payment Method Widget -->
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<!--/ End Checkout -->
+
+
+
 {% endblock %}

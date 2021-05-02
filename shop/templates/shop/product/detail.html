@@ -1,37 +1,116 @@
 {% extends "shop/base.html" %}
-{% load i18n %}
 {% load static %}
 {% block title %}{{ product.name }}{% endblock %}
 {% block content %}
-    <div class="product-detail">
-        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}"
-             alt="">
-        <h1>{{ product.name }}</h1>
-        <h2>
-            <a href="{{ product.category.get_absolute_url }}">
-                {{ product.category }}
-            </a>
-        </h2>
-        <p class="price">${{ product.price }}</p>
-        <form action="{% url "cart:cart_add" product.id %}" method="post">
-            {{ cart_product_form }}
-            {% csrf_token %}
-            <input type="submit" value="{% trans "Add to cart" %}">
-        </form>
-        {{ product.description|linebreaks }}
-        {% if recommended_products %}
-            <div class="recommendations">
-                <h3>{% trans "People who bought this also bought" %}</h3>
-                {% for p in recommended_products %}
-                    <div class="item">
-                        <a href="{{ p.get_absolute_url }}">
-                            <img src="{% if p.image %}{{ p.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}"
-                                 alt="">
-                        </a>
-                    <p><a href="{{ p.get_absolute_url }}">{{ p.name }}</a></p>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    </div>
-{% endblock %}
+<!-- Shop Single -->
+		<section class="shop single section">
+					<div class="container">
+						<div class="row"> 
+							<div class="col-12">
+								<div class="row">
+									<div class="col-lg-6 col-12">
+										<!-- Product Slider -->
+										<div class="product-gallery">
+											<!-- Images slider -->
+											<div class="flexslider-thumbnails">
+												<ul class="slides">
+													<li data-thumb="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" rel="adjustX:10, adjustY:">
+														<img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" alt="#">
+													</li>
+												</ul>
+											</div>
+											<!-- End Images slider -->
+										</div>
+										<!-- End Product slider -->
+									</div>
+									<div class="col-lg-6 col-12">
+										<div class="product-des">
+											<!-- Description -->
+											<div class="short">
+												<h4>{{ product.name }}</h4>
+												<p class="price"><span class="discount">${{product.price}}</span> </p>
+												<p class="description">{{ product.description|truncatewords:50|linebreaks }}</p>
+											</div>
+											<!--/ End Description -->
+											<!-- Product Buy -->
+											<div class="product-buy">
+                                            <form action="{% url "cart:cart_add" product.id %}" method="post">{% csrf_token %}
+												<div class="quantity">
+													<h6>Quantity :</h6>
+                                                    <!-- Input Order -->
+                                                    {% for field in cart_product_form %}
+                                                    {% if field.html_name.lower == 'quantity' %}
+													<div class="input-group">
+														<div class="button minus">
+															<button type="button" class="btn btn-primary btn-number" disabled="disabled" data-type="minus" data-field="{{field.name}}">
+																<i class="ti-minus"></i>
+															</button>
+														</div>
+														<input type="text" class="input-number" id="{{ field.id_for_label }}" name="{{ field.name }}"  data-min="1" data-max="1000" value="1">
+                                                        
+														<div class="button plus">
+															<button type="button" class="btn btn-primary btn-number" data-type="plus" data-field="{{field.name}}">
+																<i class="ti-plus"></i>
+															</button>
+														</div>
+                                                        {{ field.errors}}
+													</div>
+													{% endif %}
+													{% if field.html_name.lower == 'override' %}
+													<div class="input-group">
+														<input type="hidden" id="{{ field.id_for_label }}" name="{{ field.name }}" value="True">
+                                                        {{ field.errors}}
+													</div>
+													{% endif %}
+                                                    {% endfor %}
+													<!--/ End Input Order -->
+												</div>
+												<div class="add-to-cart">
+													<input class="btn" type="submit" value="Add to Cart"></input>
+												</div>
+                                            </form>    
+                                            
+												<p class="cat">Category :<a href="#">{{product.category }}</a></p>
+												<p class="availability">Availability : {% if product.available %}Yes {% else %}No{% endif %}</p>
+											</div>
+											<!--/ End Product Buy -->
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-12">
+										<div class="product-info">
+											<div class="nav-main">
+												<!-- Tab Nav -->
+												<ul class="nav nav-tabs" id="myTab" role="tablist">
+													<li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#" role="tab">Description</a></li>
+												</ul>
+												<!--/ End Tab Nav -->
+											</div>
+											<div class="tab-content" id="myTabContent">
+												<!-- Description Tab -->
+												<div class="tab-pane fade show active" id="description" role="tabpanel">
+													<div class="tab-single">
+														<div class="row">
+															<div class="col-12">
+																<div class="single-des">
+																	<p>{{ product.description|linebreaks }}</p>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<!--/ End Description Tab -->
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+		</section>
+		<!--/ End Shop Single -->
+
+
+
+{% endblock content %}
